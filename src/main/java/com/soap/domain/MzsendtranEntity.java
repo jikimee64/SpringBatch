@@ -10,6 +10,7 @@ import javax.persistence.Id;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //JPA에서는 프록시를 생성을 위해서 기본 생성자를 반드시 하나를 생성

@@ -6,6 +6,7 @@ import com.soap.domain.MzsendlogRepository;
 import com.soap.domain.MzsendtranEntity;
 import com.soap.domain.MzsendtranRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -24,6 +25,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.function.Function;
 
 /*
 https://jojoldu.tistory.com/493
@@ -31,8 +33,9 @@ https://ahndy84.tistory.com/19
  */
 
 @Slf4j
-@AllArgsConstructor
+//@AllArgsConstructor
 @Configuration
+@RequiredArgsConstructor
 public class MnwiseJobConfiguration {
     //private MzsendtranRepository mzsendtranRepository;
     private final KakaoAlimTalkApiService kakaoAlimTalkApiService;
@@ -48,16 +51,16 @@ public class MnwiseJobConfiguration {
     private int chunkSize = 30;
 
     //@Value("${chunkSize:30}")
-    public void setChunkSize(int chunkSize){
-        this.chunkSize = chunkSize;
-    }
+//    public void setChunkSize(int chunkSize){
+//        this.chunkSize = chunkSize;
+//    }
 
     private int poolSize = 3;
 
     //@Value("${poolSize:10}")
-    public void setPoolSize(int poolSize){
-        this.poolSize = poolSize;
-    }
+//    public void setPoolSize(int poolSize){
+//        this.poolSize = poolSize;
+//    }
 
     @Bean(name = JOB_NAME+"taskPool")
     public TaskExecutor executor() {
@@ -83,7 +86,7 @@ public class MnwiseJobConfiguration {
     public Step step(){
         log.info("********** This is Step");
         return stepBuilderFactory.get(JOB_NAME +"_step")
-                .<MzsendtranEntity, MzsendlogEntity>chunk(chunkSize)
+                .<MzsendtranEntity, MzsendtranEntity>chunk(chunkSize)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -105,25 +108,23 @@ public class MnwiseJobConfiguration {
                 .build();
     }
 
-    private ItemProcessor<MzsendtranEntity, MzsendlogEntity> processor(){
+    private ItemProcessor<MzsendtranEntity, MzsendtranEntity> processor(){
         //API 호출후 가공
-        return new ItemProcessor<MzsendtranEntity, MzsendlogEntity>() {
+        return new ItemProcessor<MzsendtranEntity, MzsendtranEntity>() {
             @Override
-            public MzsendlogEntity process(MzsendtranEntity mzsendtranEntity) throws Exception {
-                kakaoAlimTalkApiService.sendAlimTalk(mzsendtranEntity);
-                return null;
+            public MzsendtranEntity process(MzsendtranEntity mzsendtranEntity) throws Exception {
+                log.info("********** This is ItemProcessor");
+                return kakaoAlimTalkApiService.sendAlimTalk(mzsendtranEntity);
             }
         };
-
-
     }
 
     @Bean(name = JOB_NAME +"_writer")
     @StepScope
-    public JpaItemWriter<MzsendlogEntity> writer() {
+    public JpaItemWriter<MzsendtranEntity> writer() {
         log.info("********** This is writer");
-        //MZSENDTRAN, MZSENDLOG 데이터 저장
-        return new JpaItemWriterBuilder<MzsendlogEntity>()
+        //MZSENDTRAN, MZSENDLOG 데이터 저장, MZSENDTRAN 데이터 삭제
+        return new JpaItemWriterBuilder<MzsendtranEntity>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
     }

@@ -4,7 +4,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.soap.domain.MzsendlogEntity;
 import com.soap.domain.MzsendtranEntity;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
@@ -14,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -23,16 +27,16 @@ import com.google.gson.Gson;
 
 @Slf4j
 @Service
+@Getter
+@Configuration
 @ConfigurationProperties(prefix="const")
 public class KakaoAlimTalkApiService {
 
-    @Value("${alimtalkApiURL}")
+    //@Value("${alimtalkApiURL}")
     private String alimtalkApiURL;
 
-    public Map<String, String> sendAlimTalk(MzsendtranEntity mzsendtranEntity) {
-
-
-        Map<String, String> response = new HashMap<String, String>();
+    public MzsendtranEntity sendAlimTalk(MzsendtranEntity mzsendtranEntity) {
+        //Map<String, String> response = new HashMap<String, String>();
         RestTemplate restTemplate = new RestTemplate();
         JSONObject request = new JSONObject();
         HttpHeaders header = new HttpHeaders();
@@ -40,6 +44,30 @@ public class KakaoAlimTalkApiService {
 
         try {
             /*
+                API 대신 임의로 가공 부분
+            */
+            mzsendtranEntity.setPhoneNum("01099999999");
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("Kakao sendAlimTalk fail!!");
+            //response.put("status", "fail");
+        }
+        return mzsendtranEntity;
+        //return response;
+    }
+
+    //String -> JSONObject 변환
+    public JSONObject jsonParser(String message) throws ParseException {
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(message);
+        JSONObject jsobObj = (JSONObject) obj;
+        return jsobObj;
+    }
+}
+
+
+ /*
             String phoneNum = (String) mzsendtranEntity.getPhoneNum()
             String replacePhoneNum = "82" + phoneNum.substring(1);
             String tranSts = "2"; //2: 발송처리중
@@ -75,31 +103,3 @@ public class KakaoAlimTalkApiService {
             response.put("tranSts", tranSts);
             response.put("status", "success");
             */
-
-            /*
-                API 대신 임의로 가공 부분
-            */
-
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            log.error("Kakao sendAlimTalk fail!!");
-            response.put("status", "fail");
-        }
-        return response;
-    }
-
-
-
-
-
-
-
-
-    //String -> JSONObject 변환
-    public JSONObject jsonParser(String message) throws ParseException {
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(message);
-        JSONObject jsobObj = (JSONObject) obj;
-        return jsobObj;
-    }
-}
