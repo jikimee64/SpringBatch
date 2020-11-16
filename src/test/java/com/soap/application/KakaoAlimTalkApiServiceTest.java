@@ -9,13 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class KakaoAlimTalkApiServiceTest {
 
-    @Autowired
-    KakaoAlimTalkApiService kakaoAlimTalkApiService;
-
-    @Test
-    public void yamlReadTest(){
-        String alimtalkApiURL = kakaoAlimTalkApiService.getAlimtalkApiURL();
-
-        assertThat(alimtalkApiURL).isEqualTo("123123");
-    }
+//    @Autowired
+//    KakaoAlimTalkApiService kakaoAlimTalkApiService;
+//
+//    @Test
+//    public void yamlReadTest(){
+//        String alimtalkApiURL = kakaoAlimTalkApiService.getAlimtalkApiURL();
+//        assertThat(alimtalkApiURL).isEqualTo("kim");
+//    }
 }

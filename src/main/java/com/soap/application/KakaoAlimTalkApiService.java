@@ -1,24 +1,13 @@
 package com.soap.application;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.soap.domain.MzsendlogEntity;
-import com.soap.domain.MzsendtranEntity;
+import com.soap.domain.Mzsendtran2;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -33,9 +22,9 @@ import com.google.gson.Gson;
 public class KakaoAlimTalkApiService {
 
     //@Value("${alimtalkApiURL}")
-    private String alimtalkApiURL;
+    //private String alimtalkApiURL;
 
-    public MzsendtranEntity sendAlimTalk(MzsendtranEntity mzsendtranEntity) {
+    public Mzsendtran2 sendAlimTalk(Mzsendtran2 mzsendtran2) {
         //Map<String, String> response = new HashMap<String, String>();
         RestTemplate restTemplate = new RestTemplate();
         JSONObject request = new JSONObject();
@@ -46,14 +35,14 @@ public class KakaoAlimTalkApiService {
             /*
                 API 대신 임의로 가공 부분
             */
-            mzsendtranEntity.setPhoneNum("01099999999");
+            mzsendtran2.setPhoneNum("01099999999");
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             log.error("Kakao sendAlimTalk fail!!");
             //response.put("status", "fail");
         }
-        return mzsendtranEntity;
+        return mzsendtran2;
         //return response;
     }
 

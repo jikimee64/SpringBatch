@@ -1,11 +1,9 @@
 package com.soap.job;
 
 import com.soap.application.KakaoAlimTalkApiService;
-import com.soap.domain.MzsendlogEntity;
 import com.soap.domain.MzsendlogRepository;
-import com.soap.domain.MzsendtranEntity;
+import com.soap.domain.Mzsendtran2;
 import com.soap.domain.MzsendtranRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -25,7 +23,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
-import java.util.function.Function;
 
 /*
 https://jojoldu.tistory.com/493
@@ -86,7 +83,7 @@ public class MnwiseJobConfiguration {
     public Step step(){
         log.info("********** This is Step");
         return stepBuilderFactory.get(JOB_NAME +"_step")
-                .<MzsendtranEntity, MzsendtranEntity>chunk(chunkSize)
+                .<Mzsendtran2, Mzsendtran2>chunk(chunkSize)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -97,34 +94,34 @@ public class MnwiseJobConfiguration {
 
     @Bean(name = JOB_NAME +"_reader")
     @StepScope
-    public JpaPagingItemReader<MzsendtranEntity> reader(){
+    public JpaPagingItemReader<Mzsendtran2> reader(){
         log.info("********** This is Reader");
-        return new JpaPagingItemReaderBuilder<MzsendtranEntity>()
+        return new JpaPagingItemReaderBuilder<Mzsendtran2>()
                 .name(JOB_NAME +"_reader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
-                .queryString("SELECT * FROM MZSENDTRAN WHERE 1=1 LIMIT 30")
+                .queryString("SELECT mz FROM Mzsendtran2 mz WHERE mz.phoneNum=01023160200")
                 .saveState(false)
                 .build();
     }
 
-    private ItemProcessor<MzsendtranEntity, MzsendtranEntity> processor(){
+    private ItemProcessor<Mzsendtran2, Mzsendtran2> processor(){
         //API 호출후 가공
-        return new ItemProcessor<MzsendtranEntity, MzsendtranEntity>() {
+        return new ItemProcessor<Mzsendtran2, Mzsendtran2>() {
             @Override
-            public MzsendtranEntity process(MzsendtranEntity mzsendtranEntity) throws Exception {
+            public Mzsendtran2 process(Mzsendtran2 mzsendtran2) throws Exception {
                 log.info("********** This is ItemProcessor");
-                return kakaoAlimTalkApiService.sendAlimTalk(mzsendtranEntity);
+                return kakaoAlimTalkApiService.sendAlimTalk(mzsendtran2);
             }
         };
     }
 
     @Bean(name = JOB_NAME +"_writer")
     @StepScope
-    public JpaItemWriter<MzsendtranEntity> writer() {
+    public JpaItemWriter<Mzsendtran2> writer() {
         log.info("********** This is writer");
         //MZSENDTRAN, MZSENDLOG 데이터 저장, MZSENDTRAN 데이터 삭제
-        return new JpaItemWriterBuilder<MzsendtranEntity>()
+        return new JpaItemWriterBuilder<Mzsendtran2>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
     }

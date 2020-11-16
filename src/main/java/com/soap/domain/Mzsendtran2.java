@@ -15,7 +15,7 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 //JPA에서는 프록시를 생성을 위해서 기본 생성자를 반드시 하나를 생성
 //이때 접근 권한이 protected : 외부에서 생성을 열어둘 필요가 X
-public class MzsendtranEntity {
+public class Mzsendtran2 {
     @Id
     @GeneratedValue
     private String sn;
