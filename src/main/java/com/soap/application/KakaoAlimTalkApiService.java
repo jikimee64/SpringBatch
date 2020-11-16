@@ -35,6 +35,7 @@ public class KakaoAlimTalkApiService {
             /*
                 API 대신 임의로 가공 부분
             */
+            //update구문 배치에서 생성후 실행
             mzsendtran2.setPhoneNum("01099999999");
 
         } catch (Exception e) {

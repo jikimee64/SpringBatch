@@ -103,7 +103,7 @@ public class MnwiseJobConfiguration {
                 .queryString("SELECT mz FROM Mzsendtran2 mz WHERE mz.phoneNum=01023160200")
                 .saveState(false)
                 .build();
-    }
+}
 
     private ItemProcessor<Mzsendtran2, Mzsendtran2> processor(){
         //API 호출후 가공
@@ -120,7 +120,8 @@ public class MnwiseJobConfiguration {
     @StepScope
     public JpaItemWriter<Mzsendtran2> writer() {
         log.info("********** This is writer");
-        //MZSENDTRAN, MZSENDLOG 데이터 저장, MZSENDTRAN 데이터 삭제
+        //MZSENDTRAN2에 자동저장
+        //MZSENDLOG 데이터 저장, MZSENDTRAN 데이터 삭제 프로세스 추가 필요함
         return new JpaItemWriterBuilder<Mzsendtran2>()
                 .entityManagerFactory(entityManagerFactory)
                 .build();
