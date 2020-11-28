@@ -7,11 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+/**
+ * Mzsendlog 엔티티 클래스
+ */
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 //JPA에서는 프록시를 생성을 위해서 기본 생성자를 반드시 하나를 생성
 //이때 접근 권한이 protected : 외부에서 생성을 열어둘 필요가 X
 public class Mzsendlog {
@@ -79,8 +83,6 @@ public class Mzsendlog {
     private String attachment;
     @Column
     private String appUserId;
-
-
 
 
 }
